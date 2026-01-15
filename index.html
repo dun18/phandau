@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lịch tập dây kháng lực • Kế hoạch tuần + Tick hoàn thành</title>
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0c1a2b;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.09);
+      --stroke: rgba(255,255,255,.10);
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+      --good:#3cf0a5;
+      --warn:#ffd166;
+      --bad:#ff5c7a;
+      --accent:#7aa7ff;
+      --accent2:#a78bfa;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1000px 700px at 15% 10%, rgba(122,167,255,.22), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(167,139,250,.18), transparent 55%),
+        radial-gradient(900px 700px at 45% 90%, rgba(60,240,165,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    a{color:var(--accent)}
+    header{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      display:flex; gap:14px; align-items:center;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(122,167,255,.9), rgba(167,139,250,.9));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 45%);
+      transform: rotate(18deg);
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.25;
+    }
+    .sub{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius:999px;
+      padding:10px 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+    }
+    label{font-size:12px;color:var(--muted)}
+    select, button, input[type="date"], input[type="text"]{
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding:10px 12px;
+      outline:none;
+      font-size:13px;
+    }
+    select:focus, button:focus, input:focus{border-color: rgba(122,167,255,.55)}
+    button{
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    button:hover{transform: translateY(-1px)}
+    .btn-primary{
+      background: linear-gradient(135deg, rgba(122,167,255,.85), rgba(167,139,250,.85));
+      border:1px solid rgba(255,255,255,.16);
+    }
+    .btn-ghost{
+      background: rgba(255,255,255,.06);
+    }
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding: 0 18px 34px;
+      display:grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      main{grid-template-columns:1fr}
+      header{flex-direction:column}
+      .toolbar{justify-content:flex-start}
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .card .hd h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .card .hd p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .card .bd{padding:14px}
+    .grid-days{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 680px){ .grid-days{grid-template-columns:1fr} }
+
+    .day{
+      background: var(--card2);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .day-top{
+      padding:12px 12px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .day-title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .dow{font-weight:700;font-size:13px}
+    .focus{color:var(--muted);font-size:12px}
+    .tick{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .tick input{
+      width:18px;height:18px;
+      accent-color: var(--good);
+    }
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.06);
+    }
+    .badge.good{border-color: rgba(60,240,165,.35); color: rgba(60,240,165,.95)}
+    .badge.rest{border-color: rgba(255,209,102,.35); color: rgba(255,209,102,.95)}
+    .day-body{
+      padding:12px;
+    }
+    .list{
+      margin:0;
+      padding-left:18px;
+      color: rgba(234,240,255,.90);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .list li{margin:4px 0}
+    .hint{
+      margin:10px 0 0;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px;
+    }
+    .kpi .box{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
+    }
+    .kpi .num{
+      font-size:20px;
+      font-weight:800;
+      margin:2px 0 4px;
+    }
+    .kpi .lbl{
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.25;
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(60,240,165,.9), rgba(122,167,255,.9));
+    }
+    .section-title{
+      font-size:13px;
+      margin:0 0 10px;
+      letter-spacing:.15px;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      color: rgba(234,240,255,.88);
+    }
+    .chip.good{border-color: rgba(60,240,165,.30)}
+    .chip.bad{border-color: rgba(255,92,122,.32)}
+    .chip.warn{border-color: rgba(255,209,102,.32)}
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .small{
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.4;
+      margin:0;
+    }
+    .history{
+      margin-top:10px;
+      max-height:220px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .history .row{
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+      font-size:12px;
+      color: rgba(234,240,255,.88);
+    }
+    .ok{color: rgba(60,240,165,.95); font-weight:700}
+    .muted{color: var(--muted)}
+    footer{
+      max-width:1100px;
+      margin:0 auto;
+      padding: 0 18px 30px;
+      color: rgba(234,240,255,.55);
+      font-size:12px;
+      line-height:1.4;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Lịch tập tuần với dây kháng lực • Tick hoàn thành • Tăng cường độ theo tuần</h1>
+        <p class="sub">
+          Kế hoạch tập: kháng lực + nhảy dây kết thúc. Thông số tham chiếu: 1m67 – 69kg (BMI ~ <span id="bmi">—</span>).
+        </p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="pill">
+        <div>
+          <label for="weekSel">Tuần cường độ</label><br/>
+          <select id="weekSel">
+            <option value="1">Week 1 (làm quen)</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+            <option value="4">Week 4</option>
+            <option value="5">Week 5</option>
+            <option value="6">Week 6 (khá nặng)</option>
+          </select>
+        </div>
+        <div>
+          <label for="startDate">Tuần bắt đầu (Thứ 2)</label><br/>
+          <input id="startDate" type="date"/>
+        </div>
+      </div>
+
+      <div class="pill">
+        <button class="btn-primary" id="btnToday">Tự chọn tuần hiện tại</button>
+        <button class="btn-ghost" id="btnResetWeek">Reset tick tuần này</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- LEFT -->
+    <section class="card">
+      <div class="hd">
+        <div>
+          <h2>Lịch tập trong tuần</h2>
+          <p>
+            Mỗi buổi kháng lực: 5–8p khởi động + 35–55p tập dây + <b>nhảy dây 15–20p</b>.
+            Cardio riêng (T4/CN): theo lịch bên dưới.
+          </p>
+        </div>
+        <div class="badge" id="rangeBadge">—</div>
+      </div>
+
+      <div class="bd">
+        <div class="grid-days" id="daysGrid"></div>
+
+        <div class="hint">
+          <b>Nguyên tắc tăng dần:</b>
+          Week 1 ưu tiên kỹ thuật. Từ Week 2–6 tăng dần (tăng set hoặc rep hoặc độ căng dây).
+          Nếu thấy form xấu/đau khớp: giữ nguyên mức tuần trước hoặc giảm 10–20% khối lượng.
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="card">
+      <div class="hd">
+        <div>
+          <h2>Thống kê & Dinh dưỡng hỗ trợ</h2>
+          <p>Tick hoàn thành được lưu offline (localStorage) theo tuần bạn chọn.</p>
+        </div>
+        <div class="badge good" id="doneBadge">0/7</div>
+      </div>
+      <div class="bd">
+        <div class="kpi">
+          <div class="box">
+            <div class="num" id="doneCount">0</div>
+            <div class="lbl">Buổi hoàn thành tuần này</div>
+          </div>
+          <div class="box">
+            <div class="num" id="rate">0%</div>
+            <div class="lbl">Tỷ lệ hoàn thành</div>
+          </div>
+          <div class="box">
+            <div class="num" id="streak">0</div>
+            <div class="lbl">Streak (liên tiếp theo ngày)</div>
+          </div>
+          <div class="box">
+            <div class="num" id="rope">15–20p</div>
+            <div class="lbl">Nhảy dây kết thúc</div>
+          </div>
+        </div>
+
+        <div class="bar" aria-label="Tiến độ">
+          <div id="barFill"></div>
+        </div>
+
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,.10); margin:14px 0;">
+
+        <h3 class="section-title">Ăn vặt có lợi (tuỳ chọn)</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <input id="snackSearch" type="text" placeholder="Tìm (vd: sữa chua, khoai lang, trà...)" style="flex:1; min-width:220px;">
+          <button class="btn-ghost" id="btnRandomSnack">Gợi ý ngẫu nhiên</button>
+        </div>
+        <p class="small" style="margin-top:8px;">
+          Mẹo nhanh: ưu tiên <b>đạm + chất xơ</b> (sữa chua Hy Lạp, lòng trắng trứng, rau củ sống) để no lâu.
+        </p>
+        <div class="chips" id="snackChips" style="margin-top:10px;"></div>
+
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,.10); margin:14px 0;">
+
+        <h3 class="section-title">NÊN HẠN CHẾ / TRÁNH</h3>
+        <div class="two-col">
+          <div class="chip bad">Tinh bột xấu – đường nhanh (nước ngọt, trà sữa, bánh ngọt, bánh mì trắng...)</div>
+          <div class="chip bad">Chất béo xấu (đồ chiên rán, xúc xích/đồ hộp, mỡ động vật, da gà...)</div>
+          <div class="chip warn">Rượu bia & ăn mặn (giữ nước dưới da, cản trở đốt mỡ)</div>
+        </div>
+
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,.10); margin:14px 0;">
+
+        <h3 class="section-title">Nhật ký tick tuần này</h3>
+        <div class="history" id="history"></div>
+
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Ghi chú an toàn: Nếu có tiền sử chấn thương vai/gối/lưng hoặc đau nhói khi tập, ưu tiên giảm biên độ, giảm lực dây,
+    và thay bài cho phù hợp. Mục tiêu tốt là tiến bộ ổn định theo tuần, không cần “đốt” quá sức.
+  </footer>
+
+<script>
+(function(){
+  // ====== BASIC METRICS ======
+  const heightM = 1.67;
+  const weightKg = 69;
+  const bmi = (weightKg / (heightM*heightM));
+  document.getElementById('bmi').textContent = bmi.toFixed(1);
+
+  // ====== DATE HELPERS ======
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const pretty = d => `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+  const addDays = (d, days) => { const x = new Date(d); x.setDate(x.getDate()+days); return x; };
+
+  function mondayOfWeek(date){
+    const d = new Date(date);
+    const day = d.getDay(); // 0 Sun..6 Sat
+    const diff = (day === 0 ? -6 : 1) - day; // shift to Monday
+    d.setDate(d.getDate()+diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+
+  // ====== WORKOUT TEMPLATE ======
+  // Base prescriptions for Week 1. Later weeks scale.
+  const plan = [
+    {
+      key:"t2", name:"T2", label:"Ngực • Tay trước • Lưng", type:"work",
+      exercises:[
+        ["Chest Press (dây sau lưng)", 3, "10–12"],
+        ["Chest Fly (ép ngực)", 3, "12–15"],
+        ["Row (kéo lưng)", 3, "10–12"],
+        ["Lat Pulldown / Straight-arm Pulldown", 2, "12–15"],
+        ["Biceps Curl", 3, "10–12"],
+        ["Hammer Curl", 2, "12–15"]
+      ],
+      finisher:"Nhảy dây 15–20p (nhịp vừa, kết thúc)"
+    },
+    {
+      key:"t3", name:"T3", label:"Ngực • Vai • Tay sau", type:"work",
+      exercises:[
+        ["Push-up + Band (nếu được)", 3, "AMRAP*"],
+        ["Chest Press", 3, "10–12"],
+        ["Shoulder Press", 3, "10–12"],
+        ["Lateral Raise (giang vai)", 3, "12–15"],
+        ["Triceps Pushdown", 3, "10–12"],
+        ["Overhead Triceps Extension", 2, "12–15"]
+      ],
+      finisher:"Nhảy dây 15–20p (nhịp vừa, kết thúc)"
+    },
+    {
+      key:"t4", name:"T4", label:"Bụng • Chân • Cardio 30p", type:"work",
+      exercises:[
+        ["Squat (dây dưới chân)", 4, "10–12"],
+        ["Romanian Deadlift (hinge)", 3, "10–12"],
+        ["Glute Bridge / Hip Thrust", 3, "12–15"],
+        ["Standing Calf Raise", 3, "12–20"],
+        ["Core: Pallof Press", 3, "10–12 mỗi bên"],
+        ["Core: Dead Bug / Plank", 3, "30–45s"]
+      ],
+      cardio:"Cardio 30p (đi nhanh/xe đạp/nhảy dây theo block)",
+      finisher:"Nếu đã cardio 30p: nhảy dây chỉ 8–12p nhẹ hoặc bỏ qua nếu mệt."
+    },
+    {
+      key:"t5", name:"T5", label:"Nghỉ / hồi phục", type:"rest",
+      exercises:[
+        ["Đi bộ nhẹ 20–40p (tuỳ)", 0, ""],
+        ["Giãn cơ 8–12p", 0, ""],
+        ["Ngủ đủ + uống nước", 0, ""]
+      ],
+      finisher:"Không bắt buộc nhảy dây."
+    },
+    {
+      key:"t6", name:"T6", label:"Ngực • Tay trước • Lưng", type:"work",
+      exercises:[
+        ["Incline Chest Press (đổi góc)", 3, "10–12"],
+        ["Chest Fly", 3, "12–15"],
+        ["Single-arm Row", 3, "10–12 mỗi bên"],
+        ["Face Pull (sau vai/lưng trên)", 3, "12–15"],
+        ["Biceps Curl (tempo chậm)", 3, "8–12"],
+        ["Concentration Curl (tuỳ)", 2, "12–15"]
+      ],
+      finisher:"Nhảy dây 15–20p (nhịp vừa, kết thúc)"
+    },
+    {
+      key:"t7", name:"T7", label:"Ngực • Vai • Tay sau", type:"work",
+      exercises:[
+        ["Chest Press (nặng hơn)", 4, "8–12"],
+        ["Push-up + Band (tuỳ)", 2, "AMRAP*"],
+        ["Shoulder Press", 3, "8–12"],
+        ["Lateral Raise + Front Raise (superset)", 3, "12–15"],
+        ["Triceps Pushdown", 3, "10–12"],
+        ["Triceps Kickback (dây)", 2, "12–15"]
+      ],
+      finisher:"Nhảy dây 15–20p (nhịp vừa, kết thúc)"
+    },
+    {
+      key:"cn", name:"CN", label:"Nghỉ (hoặc cardio 45–60p nếu siêng)", type:"rest",
+      exercises:[
+        ["Tuỳ chọn: Cardio Zone 2 45–60p", 0, ""],
+        ["Hoặc đi bộ 60–90p", 0, ""],
+        ["Giãn cơ 10p", 0, ""]
+      ],
+      finisher:"Nếu cardio: có thể nhảy dây 10p nhẹ hoặc bỏ."
+    }
+  ];
+
+  // ====== PROGRESSION MODEL ======
+  // Week scaling:
+  // - Sets: +0 (W1), +0 (W2), +1 (W3-4), +1~2 (W5-6) but cap at 5
+  // - Reps: move toward top of range; or add tension/tempo if already high.
+  // - Cardio: T4 +5 min each 2 weeks, CN optional +5-10 min
+  function scaleSets(baseSets, week){
+    if(baseSets === 0) return 0;
+    const add = (week<=2) ? 0 : (week<=4 ? 1 : 2);
+    return Math.min(5, baseSets + add);
+  }
+  function scaleCardioT4(week){
+    const base = 30;
+    const add = (week<=2) ? 0 : (week<=4 ? 5 : 10);
+    return base + add; // 30/35/40
+  }
+  function ropeText(week){
+    // keep stable but allow optional intensity
+    if(week<=2) return "15p nhẹ–vừa";
+    if(week<=4) return "15–20p vừa";
+    return "18–22p vừa–khá";
+  }
+  function intensityNote(week){
+    if(week===1) return "Ưu tiên kỹ thuật, RPE ~6/10, nghỉ 60–90s.";
+    if(week===2) return "Tăng nhẹ độ căng dây hoặc thêm 1–2 reps, RPE ~6–7/10.";
+    if(week===3) return "Tăng set cho bài chính, RPE ~7/10, nghỉ 60–90s.";
+    if(week===4) return "Giữ set, cố đạt top reps/tempo chậm, RPE ~7–8/10.";
+    if(week===5) return "Tăng lực dây/giảm nghỉ, RPE ~8/10, kỹ thuật vẫn ưu tiên.";
+    return "Tuần nặng: chọn bài chính 4–5 set, phụ 3–4 set, RPE ~8–9/10 (không phá form).";
+  }
+
+  // ====== SNACKS ======
+  const snacks = [
+    "Chuối","Táo","Ổi","Bơ chín","Dâu tây","Việt quất","Thơm",
+    "Sữa chua không đường","Sữa chua Hy Lạp",
+    "Thanh năng lượng (ít đường)","Bánh gạo lứt",
+    "Lương khô 0 calo","Bánh mì đen 0 calo",
+    "Khoai lang","Socola đen không đường",
+    "Thạch rau câu Konjac",
+    "Dưa leo","Cần tây","Củ đậu","Cà chua bi","Cà rốt",
+    "Rong biển nướng không dầu",
+    "Lòng trắng trứng gà",
+    "Soda chanh 0 đường","Trà gừng","Trà đen 0 đường","Trà xanh 0 đường",
+    "Pepsi 0 calo","Coca-Cola 0 calo","Cafe đen không đường","Sữa tươi không đường"
+  ];
+
+  // ====== STORAGE KEYS ======
+  function storageKey(startMondayStr, week){
+    return `band_plan_v1::${startMondayStr}::w${week}`;
+  }
+
+  function getWeekState(startMondayStr, week){
+    const raw = localStorage.getItem(storageKey(startMondayStr, week));
+    if(!raw) return { checks:{}, history:[] };
+    try { return JSON.parse(raw); } catch { return { checks:{}, history:[] }; }
+  }
+  function setWeekState(startMondayStr, week, state){
+    localStorage.setItem(storageKey(startMondayStr, week), JSON.stringify(state));
+  }
+
+  // ====== UI RENDER ======
+  const daysGrid = document.getElementById('daysGrid');
+  const weekSel = document.getElementById('weekSel');
+  const startDate = document.getElementById('startDate');
+  const rangeBadge = document.getElementById('rangeBadge');
+
+  const doneBadge = document.getElementById('doneBadge');
+  const doneCountEl = document.getElementById('doneCount');
+  const rateEl = document.getElementById('rate');
+  const streakEl = document.getElementById('streak');
+  const ropeEl = document.getElementById('rope');
+  const barFill = document.getElementById('barFill');
+  const historyEl = document.getElementById('history');
+
+  function computeDateRange(startMonday){
+    const endSunday = addDays(startMonday, 6);
+    rangeBadge.textContent = `${pretty(startMonday)} → ${pretty(endSunday)}`;
+  }
+
+  function dayDateForKey(startMonday, key){
+    const map = { t2:0, t3:1, t4:2, t5:3, t6:4, t7:5, cn:6 };
+    return addDays(startMonday, map[key] ?? 0);
+  }
+
+  function render(){
+    const week = Number(weekSel.value);
+    const startMondayStr = startDate.value;
+    const startMonday = new Date(startMondayStr+"T00:00:00");
+    computeDateRange(startMonday);
+
+    const state = getWeekState(startMondayStr, week);
+
+    // Render days
+    daysGrid.innerHTML = "";
+    for(const d of plan){
+      const dateObj = dayDateForKey(startMonday, d.key);
+      const dateLabel = pretty(dateObj);
+      const checked = !!state.checks[d.key];
+
+      const card = document.createElement('div');
+      card.className = "day";
+
+      const top = document.createElement('div');
+      top.className = "day-top";
+
+      const left = document.createElement('div');
+      left.className = "day-title";
+      left.innerHTML = `
+        <div class="dow">${d.name} <span class="muted" style="font-weight:600;">• ${dateLabel}</span></div>
+        <div class="focus">${d.label}</div>
+      `;
+
+      const right = document.createElement('div');
+      const badge = document.createElement('span');
+      badge.className = "badge " + (d.type==="rest" ? "rest" : "good");
+      badge.textContent = (d.type==="rest") ? "REST" : "WORK";
+
+      const tick = document.createElement('label');
+      tick.className = "tick";
+      tick.title = "Đánh dấu hoàn thành";
+      const cb = document.createElement('input');
+      cb.type = "checkbox";
+      cb.checked = checked;
+      cb.addEventListener('change', () => {
+        const s = getWeekState(startMondayStr, week);
+        s.checks[d.key] = cb.checked;
+
+        // update history log with an entry only when turning ON
+        const stamp = new Date();
+        const iso = stamp.toISOString();
+        const entry = {
+          dayKey: d.key,
+          dayName: d.name,
+          date: dateLabel,
+          at: iso,
+          status: cb.checked ? "done" : "undone"
+        };
+
+        // Keep history concise: only record "done" events, keep last 60
+        if(cb.checked){
+          s.history = [entry, ...(s.history||[])].slice(0,60);
+        }
+        setWeekState(startMondayStr, week, s);
+        render(); // rerender for stats + UI
+      });
+
+      const mark = document.createElement('span');
+      mark.textContent = checked ? "✓" : " ";
+      mark.style.fontWeight = "900";
+      mark.style.color = checked ? "rgba(60,240,165,.95)" : "rgba(234,240,255,.35)";
+      mark.style.width = "14px";
+      mark.style.display = "inline-block";
+      tick.appendChild(cb);
+      tick.appendChild(mark);
+
+      right.appendChild(badge);
+      right.appendChild(document.createElement('span')).style.width="8px";
+      right.appendChild(tick);
+      right.style.display="flex";
+      right.style.alignItems="center";
+      right.style.gap="10px";
+
+      top.appendChild(left);
+      top.appendChild(right);
+
+      const body = document.createElement('div');
+      body.className = "day-body";
+
+      // Build exercise list with scaling
+      const ul = document.createElement('ul');
+      ul.className = "list";
+
+      for(const [name, sets, reps] of d.exercises){
+        const li = document.createElement('li');
+
+        if(sets === 0){
+          li.innerHTML = `<span>${name}</span>`;
+        } else {
+          const scaled = scaleSets(sets, week);
+          let repsText = reps;
+
+          // Make reps slightly more assertive by week: push toward top end.
+          // Keep it simple and safe: add note instead of hard numbers everywhere.
+          let extra = "";
+          if(week>=2 && reps.includes("–")){
+            extra = (week<=3) ? " (cố đạt đầu trên)" : " (đạt đầu trên + tempo chậm)";
+          } else if(week>=4 && reps==="AMRAP*"){
+            extra = " (dừng trước khi phá form)";
+          }
+
+          li.innerHTML = `<b>${name}</b>: ${scaled} set × ${repsText}${extra}`;
+        }
+        ul.appendChild(li);
+      }
+
+      body.appendChild(ul);
+
+      // Cardio / finisher notes
+      const note = document.createElement('div');
+      note.className = "hint";
+
+      let fin = d.finisher || "";
+      let extraCardio = "";
+
+      if(d.key === "t4"){
+        extraCardio = `<div style="margin-top:6px;"><b>Cardio:</b> ${scaleCardioT4(week)}p</div>`;
+      }
+      if(d.key === "cn"){
+        // optional progressive guidance
+        const base = 45;
+        const add = (week<=2)?0:(week<=4?5:10);
+        extraCardio = `<div style="margin-top:6px;"><b>CN nếu siêng:</b> ${base+add}–${60+add}p (Zone 2)</div>`;
+      }
+
+      note.innerHTML = `
+        <div><b>Nhắc buổi tập:</b> ${fin}</div>
+        ${extraCardio}
+        <div style="margin-top:6px;"><b>Gợi ý cường độ tuần:</b> ${intensityNote(week)}</div>
+        <div class="muted" style="margin-top:6px;">* AMRAP = làm nhiều reps nhất có thể nhưng vẫn giữ form chuẩn.</div>
+      `;
+      body.appendChild(note);
+
+      card.appendChild(top);
+      card.appendChild(body);
+      daysGrid.appendChild(card);
+    }
+
+    // Stats
+    const checks = state.checks || {};
+    const totalDays = plan.length; // 7
+    const done = Object.values(checks).filter(Boolean).length;
+    const rate = Math.round((done/totalDays)*100);
+
+    doneBadge.textContent = `${done}/${totalDays}`;
+    doneCountEl.textContent = done;
+    rateEl.textContent = `${rate}%`;
+    ropeEl.textContent = ropeText(week);
+    barFill.style.width = `${rate}%`;
+
+    // Streak: based on checked days up to "today" within selected week range
+    // We'll compute in order of T2..CN and count consecutive checked from earliest to latest up to the last checked sequence.
+    const order = ["t2","t3","t4","t5","t6","t7","cn"];
+    let currentStreak = 0;
+    for(const k of order){
+      if(checks[k]) currentStreak++;
+      else break;
+    }
+    // If the first day isn't checked, streak=0; simple, predictable.
+    streakEl.textContent = currentStreak;
+
+    // History (done events)
+    historyEl.innerHTML = "";
+    const hist = (state.history||[]);
+    if(hist.length === 0){
+      const empty = document.createElement('div');
+      empty.className = "row";
+      empty.innerHTML = `<span class="muted">Chưa có tick nào trong tuần này.</span><span class="muted">—</span>`;
+      historyEl.appendChild(empty);
+    } else {
+      for(const h of hist){
+        const row = document.createElement('div');
+        row.className = "row";
+        const when = new Date(h.at);
+        const whenTxt = `${pad(when.getHours())}:${pad(when.getMinutes())} • ${pretty(when)}`;
+        row.innerHTML = `<span><span class="ok">✓</span> ${h.dayName} (${h.date})</span><span class="muted">${whenTxt}</span>`;
+        historyEl.appendChild(row);
+      }
+    }
+
+    // Snacks chips render (based on search)
+    renderSnacks();
+  }
+
+  // ====== SNACK UI ======
+  const snackChips = document.getElementById('snackChips');
+  const snackSearch = document.getElementById('snackSearch');
+  const btnRandomSnack = document.getElementById('btnRandomSnack');
+
+  function renderSnacks(){
+    const q = (snackSearch.value || "").trim().toLowerCase();
+    snackChips.innerHTML = "";
+
+    const filtered = snacks.filter(s => s.toLowerCase().includes(q));
+    const show = filtered.slice(0, 30);
+
+    for(const s of show){
+      const el = document.createElement('div');
+      el.className = "chip good";
+      el.textContent = s;
+      snackChips.appendChild(el);
+    }
+
+    if(filtered.length === 0){
+      const el = document.createElement('div');
+      el.className = "chip warn";
+      el.textContent = "Không tìm thấy — thử từ khoá khác.";
+      snackChips.appendChild(el);
+    } else if(filtered.length > show.length){
+      const el = document.createElement('div');
+      el.className = "chip";
+      el.textContent = `+ ${filtered.length - show.length} mục khác...`;
+      snackChips.appendChild(el);
+    }
+  }
+
+  snackSearch.addEventListener('input', renderSnacks);
+  btnRandomSnack.addEventListener('click', () => {
+    const pick = snacks[Math.floor(Math.random()*snacks.length)];
+    snackSearch.value = pick;
+    renderSnacks();
+  });
+
+  // ====== INIT DEFAULT START DATE (MONDAY OF CURRENT WEEK) ======
+  function initWeek(){
+    const mon = mondayOfWeek(new Date());
+    startDate.value = fmt(mon);
+    render();
+  }
+
+  document.getElementById('btnToday').addEventListener('click', () => {
+    const mon = mondayOfWeek(new Date());
+    startDate.value = fmt(mon);
+    render();
+  });
+
+  document.getElementById('btnResetWeek').addEventListener('click', () => {
+    const week = Number(weekSel.value);
+    const startMondayStr = startDate.value;
+    localStorage.removeItem(storageKey(startMondayStr, week));
+    render();
+  });
+
+  weekSel.addEventListener('change', render);
+  startDate.addEventListener('change', render);
+
+  // Ensure date is monday-ish: if user picks any date, snap to monday of that week.
+  startDate.addEventListener('blur', () => {
+    if(!startDate.value) return;
+    const d = new Date(startDate.value+"T00:00:00");
+    const mon = mondayOfWeek(d);
+    startDate.value = fmt(mon);
+    render();
+  });
+
+  initWeek();
+})();
+</script>
+</body>
+</html>
